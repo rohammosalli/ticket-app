@@ -11,12 +11,15 @@ interface SearchParams {
 }
 
 const Tickets = async ({ searchParams }: { searchParams: SearchParams }) => {
-  const ticket = await prisma.ticket.findMany();
   const pageSize = 10;
-  console.log(ticket);
 
   const page = parseInt(searchParams.page) || 1;
   const ticketCount = await prisma.ticket.count();
+
+  const ticket = await prisma.ticket.findMany({
+    take: pageSize,
+    skip: (page - 1) * pageSize,
+  });
   return (
     <div>
       <Link
